@@ -59,7 +59,6 @@ func _ready() -> void:
 		if !text.is_empty():
 			if wait_before_start > 0.0:
 				self.visible = false
-				await get_tree().create_timer(wait_before_start).timeout
 				typewrite(text)
 			else:
 				typewrite(text)
