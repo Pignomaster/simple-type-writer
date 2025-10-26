@@ -26,6 +26,13 @@ signal typewriting_done
 ## Whenever reaching [member stop_characters], the [TypeWriterLabel] will stop typing for [member stop_duration] seconds.
 @export var stop_characters: Array[String] = ["."]
 
+## New Feature: wait_time_before starting typing (in seconds)
+@export_range(0.0, 100.0) var wait_before_start: float = 0.0:
+	set(value):
+		wait_before_start = value
+		notify_property_list_changed()
+
+
 
 var _text_to_type: String = ""
 var _typing: bool = false
@@ -50,7 +57,12 @@ func _validate_property(property: Dictionary) -> void:
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		if !text.is_empty():
-			typewrite(text)
+			if wait_before_start > 0.0:
+				self.visible = false
+				await get_tree().create_timer(wait_before_start).timeout
+				typewrite(text)
+			else:
+				typewrite(text)
 
 
 func _process(delta: float) -> void:
@@ -109,6 +121,16 @@ func typewrite(text_to_type: String) -> void:
 	_text_to_type = _get_raw_text_from_bbcode(text_to_type)
 	_typing_timer = 0.0
 	_stop_timer = 0.0
+
+	# If a wait_before_start is configured, pause typing until the timer expires.
+	if wait_before_start > 0.0:
+		# mark as paused so _process doesn't start typing until we resume
+		set_deferred("_paused", true)
+		set_deferred("_typing", false)
+		await get_tree().create_timer(wait_before_start).timeout
+
+	# start typing
+	self.visible = true
 	set_deferred("_paused", false)
 	set_deferred("_typing", true)
 
