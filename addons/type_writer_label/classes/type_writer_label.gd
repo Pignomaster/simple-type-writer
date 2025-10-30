@@ -26,13 +26,11 @@ signal typewriting_done
 ## Whenever reaching [member stop_characters], the [TypeWriterLabel] will stop typing for [member stop_duration] seconds.
 @export var stop_characters: Array[String] = ["."]
 
-## New Feature: wait_time_before starting typing (in seconds)
-@export_range(0.0, 100.0) var wait_before_start: float = 0.0:
-	set(value):
-		wait_before_start = value
-		notify_property_list_changed()
+## Wait time starting typing (in seconds) after calling [method typewrite]
+@export_range(0.0, 100.0) var wait_before_start: float = 0.0
 
-
+## Wait time after finishing typing (in seconds) before sending [signal typewriting_done]
+@export_range(0.0, 100.0) var wait_after_finish: float = 0.0
 
 var _text_to_type: String = ""
 var _typing: bool = false
@@ -41,6 +39,9 @@ var _typing_timer: float = 0.0
 var _stop_timer: float = 0.0
 var _paused: bool = false
 
+# Wait before & after buffers
+var _wait_before_buffer: float = -999.0
+var _wait_after_buffer: float = -999.0
 
 # INSPECTOR CONFIGURATION
 func _validate_property(property: Dictionary) -> void:
@@ -57,39 +58,51 @@ func _validate_property(property: Dictionary) -> void:
 func _ready() -> void:
 	if !Engine.is_editor_hint():
 		if !text.is_empty():
-			if wait_before_start > 0.0:
-				self.visible = false
-				typewrite(text)
-			else:
-				typewrite(text)
+			typewrite(text)
 
 
 func _process(delta: float) -> void:
 	if !Engine.is_editor_hint():
-		if _typing && !_paused:
-			if !_text_to_type.is_empty():
-				if _stop_timer <= 0:
-					# Compute how much chars shall be written on the current frame.
-					# More than 1 character can be written if the typing speed is higher than current framerate.
-					var next_chars := ""
-					while !_text_to_type.is_empty() && _typing_timer <= 0:
-						var next_char = _text_to_type[0]
-						_text_to_type = _text_to_type.erase(0)
-						next_chars += next_char
-						_typing_timer += _typing_time_gap
-						# If a "stop" character is reached, do not type more characters for the current frame.
-						if stop_after_character && _is_stop_character(next_char):
-							_stop_timer = stop_duration
-							break
-					visible_characters += next_chars.length()
-					# Play writing sound if exists and is not playing.
-					if typing_sound_player && !typing_sound_player.playing:
-						typing_sound_player.play()
-					_typing_timer -= delta
-				_stop_timer -= delta
-			else: # If typing, but has no more text to type, means the typing is done.
+		if _typing:
+			if !_paused:
+				if !_text_to_type.is_empty():
+					if _stop_timer <= 0:
+						# Compute how much chars shall be written on the current frame.
+						# More than 1 character can be written if the typing speed is higher than current framerate.
+						var next_chars := ""
+						while !_text_to_type.is_empty() && _typing_timer <= 0:
+							var next_char = _text_to_type[0]
+							_text_to_type = _text_to_type.erase(0)
+							next_chars += next_char
+							_typing_timer += _typing_time_gap
+							# If a "stop" character is reached, do not type more characters for the current frame.
+							if stop_after_character && _is_stop_character(next_char):
+								_stop_timer = stop_duration
+								break
+						visible_characters += next_chars.length()
+						# Play writing sound if exists and is not playing.
+						if typing_sound_player && !typing_sound_player.playing:
+							typing_sound_player.play()
+						_typing_timer -= delta
+					_stop_timer -= delta
+				else: # If typing, but has no more text to type, means the typing is done.
+					_wait_after_buffer = wait_after_finish
+					_typing = false
+		# If a wait_before_start is configured, typing do not start until time elapsed.
+		elif _wait_before_buffer > -999.0:
+			if _wait_before_buffer <= 0.0:
+				_wait_before_buffer = -999.0
+				_paused = false
+				_typing = true
+			else:
+				_wait_before_buffer -= delta
+		# If a wait_before_start is configured, typing do not start until time elapsed.
+		elif _wait_after_buffer > -999.0:
+			if _wait_after_buffer <= 0.0:
+				_wait_after_buffer = -999.0
 				typewriting_done.emit()
-				_typing = false
+			else:
+				_wait_after_buffer -= delta
 
 
 func _is_stop_character(char: String) -> bool:
@@ -113,25 +126,18 @@ func is_paused() -> bool:
 ## Type the given text at [member typing_speed] characters per seconds.
 ## The given text can be BBCode.
 func typewrite(text_to_type: String) -> void:
-	_typing_time_gap = 1.0 / typing_speed
-	visible_characters = 0
-	text = text_to_type
+	set_deferred("_typing_time_gap", 1.0 / typing_speed)
+	set_deferred("visible_characters", 0)
+	set_deferred("text", text_to_type)
+	
 	# Remove BBCode from text to follow raw text typing.
-	_text_to_type = _get_raw_text_from_bbcode(text_to_type)
-	_typing_timer = 0.0
-	_stop_timer = 0.0
-
-	# If a wait_before_start is configured, pause typing until the timer expires.
-	if wait_before_start > 0.0:
-		# mark as paused so _process doesn't start typing until we resume
-		set_deferred("_paused", true)
-		set_deferred("_typing", false)
-		await get_tree().create_timer(wait_before_start).timeout
-
-	# start typing
-	self.visible = true
-	set_deferred("_paused", false)
-	set_deferred("_typing", true)
+	set_deferred("_text_to_type", _get_raw_text_from_bbcode(text_to_type))
+	set_deferred("_typing_timer", 0.0)
+	set_deferred("_stop_timer", 0.0)
+	
+	set_deferred("_wait_before_buffer", wait_before_start)
+	set_deferred("_paused", true)
+	set_deferred("_typing", false)
 
 
 func _get_raw_text_from_bbcode(bbcode: String) -> String:
