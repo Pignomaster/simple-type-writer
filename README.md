@@ -50,9 +50,9 @@ Please check the class documentation. Press F1 > Search TypeWriterLabel
 
 ## Features
 ### Type a text
-Add a `TypeWriterLabel`node then:
-- If you fill the inherited `text` field in the inspector, when entering the scene tree, the `TypeWriterLabel`will start typing this text.
-- Call the `typewrite(text_to_type: String)` function to ask the `TypeWriterLabel`to type the given text.
+Add a `TypeWriterLabel`node then call the `typewrite(text_to_type: String)` function to ask the `TypeWriterLabel`to type the given text.
+
+Note: If you fill the inherited `text` field in the inspector, when entering the scene tree, the `TypeWriterLabel`will start typing this text.
 
 /!\ If your text does not fit into the control borders, then enable `scroll_following_visible_characters` on your `TypeWriterLabel`. (You might also want to disable `scroll_active` to hide the scrollbar)
 
