@@ -4,6 +4,8 @@ class_name TypeWriterLabel extends RichTextLabel
 
 ## Emitted when the last character from the text of the last [method typewrite] has been typed.
 signal typewriting_done
+## Emitted when a character from the text of the last [method typewrite] has been typed.
+signal typewriting_char_done(char: String)
 
 ## Current typing speed in character per second.
 @export_range(0.0, 1000.0) var typing_speed: float = 40.0:
@@ -80,6 +82,8 @@ func _process(delta: float) -> void:
 								_stop_timer = stop_duration
 								break
 						visible_characters += next_chars.length()
+						# Emit signal when chars are rendered.
+						typewriting_char_done.emit(next_chars)
 						# Play writing sound if exists and is not playing.
 						if typing_sound_player && !typing_sound_player.playing:
 							typing_sound_player.play()
