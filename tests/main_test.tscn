@@ -55,6 +55,7 @@ pitch_scale = 1.3
 
 [node name="SignalBasedAudioSteamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_64sjs")
+volume_db = -10.0
 pitch_scale = 1.3
 
 [node name="SignalCheckButton" type="CheckButton" parent="."]
@@ -72,6 +73,6 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Use signal to play sound effect"
 
-[connection signal="typewriting_char_done" from="TypeWriterLabel" to="." method="_on_type_writer_label_typewriting_char_done"]
+[connection signal="new_chars_typed" from="TypeWriterLabel" to="." method="_on_type_writer_label_new_chars_typed"]
 [connection signal="typewriting_done" from="TypeWriterLabel" to="." method="_on_type_writer_label_typewriting_done"]
 [connection signal="toggled" from="SignalCheckButton" to="." method="_on_check_button_toggled"]
