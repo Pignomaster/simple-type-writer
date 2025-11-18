@@ -76,6 +76,9 @@ Do not mistake the "pause" for the "stop". When paused, the `TypeWriterLabel`wil
 The signal `typewriting_done` is emitted when the last character of the current typed text has been displayed.
 You can also ask the `TypeWriterLabel`still has some text to type with the function `is_typing()`.
 
+### Notify when new chars are typed
+The signal `new_chars_typed` is emitted when new chars are written in the label. The signal brings the written chars.
+
 ### Skip typing
 By calling `skip_typing` while the `TypeWriterLabel`is typing, the text will be displayed all at once.
 In combination with the function `is_typing()`, you can setup a simple dialogue manager.
