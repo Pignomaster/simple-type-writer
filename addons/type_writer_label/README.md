@@ -1,6 +1,6 @@
-# TypeWriterLabel <img src="https://raw.githubusercontent.com/Pignomaster/simple-type-writer/refs/heads/main/github_assets/typewriterlabel.png?token=GHSAT0AAAAAADJJIRQF6WCMUODKLFRKAJVO2HTRGBA" width="24">
+# TypeWriterLabel <img src="https://raw.githubusercontent.com/Pignomaster/simple-type-writer/refs/heads/main/github_assets/md_inline_icon.png" width="24">
 
-Add a new node providing a "typing" effect to your `RichTextLabel`. Configure speed, play sound and stop on specific characters to animate your typewriter.
+Add a new node providing "typing" effect to your `RichTextLabel`. Configure speed, play sound and stop on specific characters to animate your typewriter.
 Compatible with BBCode.
 
 ## Table of Contents
@@ -13,6 +13,7 @@ Compatible with BBCode.
   - [Short stop after a specific character](#short-stop-after-a-specific-character)
   - [Pause and resume typing](#pause-and-resume-typing)
   - [Notify when typing is done](#notify-when-the-typing-is-done)
+  - [Notify when new chars are typed](#notify-when-new-chars-are-typed).
   - [Skip typing](#skip-typing)
   - [Compatibility with BBCode](#compatibility-with-bbcode)
 - [Examples](#examples)
@@ -50,9 +51,9 @@ Please check the class documentation. Press F1 > Search TypeWriterLabel
 
 ## Features
 ### Type a text
-Add a `TypeWriterLabel`node then:
-- If you fill the inherited `text` field in the inspector, when entering the scene tree, the `TypeWriterLabel`will start typing this text.
-- Call the `typewrite(text_to_type: String)` function to ask the `TypeWriterLabel`to type the given text.
+Add a `TypeWriterLabel`node then call the `typewrite(text_to_type: String)` function to ask the `TypeWriterLabel`to type the given text.
+
+Note: If you fill the inherited `text` field in the inspector, when entering the scene tree, the `TypeWriterLabel`will start typing this text.
 
 /!\ If your text does not fit into the control borders, then enable `scroll_following_visible_characters` on your `TypeWriterLabel`. (You might also want to disable `scroll_active` to hide the scrollbar)
 
@@ -75,6 +76,9 @@ Do not mistake the "pause" for the "stop". When paused, the `TypeWriterLabel`wil
 ### Notify when the typing is done
 The signal `typewriting_done` is emitted when the last character of the current typed text has been displayed.
 You can also ask the `TypeWriterLabel`still has some text to type with the function `is_typing()`.
+
+### Notify when new chars are typed
+The signal `new_chars_typed` is emitted when new chars are written in the label. The signal brings the written chars.
 
 ### Skip typing
 By calling `skip_typing` while the `TypeWriterLabel`is typing, the text will be displayed all at once.
