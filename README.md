@@ -13,6 +13,7 @@ Compatible with BBCode.
   - [Short stop after a specific character](#short-stop-after-a-specific-character)
   - [Pause and resume typing](#pause-and-resume-typing)
   - [Notify when typing is done](#notify-when-the-typing-is-done)
+  - [Notify when new chars are typed](#notify-when-new-chars-are-typed).
   - [Skip typing](#skip-typing)
   - [Compatibility with BBCode](#compatibility-with-bbcode)
 - [Examples](#examples)
