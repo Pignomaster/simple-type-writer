@@ -147,7 +147,7 @@ func typewrite(text_to_type: String) -> void:
 func _get_raw_text_from_bbcode(bbcode: String) -> String:
 	var regex = RegEx.new()
 	# Replace [img]{path}[/img] by an escape " ". It is considered as 1 character by the RichTextLabel.
-	regex.compile("\\[img.*\\].*\\[\\/img\\]")
+	regex.compile("\\[img[^\\]]*\\][\\s\\S]*?\\[\\/img\\]")
 	var bbcode_without_img = regex.sub(bbcode, " ", true)
 	# Then remove any other BBCode.
 	regex.compile("\\[[^\\]]+\\]")
