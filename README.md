@@ -90,9 +90,11 @@ In combination with the function `is_typing()`, you can setup a simple dialogue 
 ### Compatibility with BBCode
 You may use BBCode to write fancy texts. The `TypeWriterLabel` work fine with it. Inline images injected with BBCode will count as 1 character when typed.
 
-## Examples
+## Games using TypeWriterLabel
 
-[Spawn Quest](https://gringo-charlatan.itch.io/spawn-quest) - The game makes use of TypeWriterLabel and BBCode for its texts.
+[Divider Dave](https://store.steampowered.com/app/4463690/Divider_Dave/)
+[Spawn Quest](https://gringo-charlatan.itch.io/spawn-quest)
+
 
 ## License
 
