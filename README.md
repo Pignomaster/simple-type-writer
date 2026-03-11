@@ -92,7 +92,8 @@ You may use BBCode to write fancy texts. The `TypeWriterLabel` work fine with it
 
 ## Games using TypeWriterLabel
 
-[Divider Dave](https://store.steampowered.com/app/4463690/Divider_Dave/)
+[Divider Dave](https://store.steampowered.com/app/4463690/Divider_Dave/) (Wishlist on Steam)
+
 [Spawn Quest](https://gringo-charlatan.itch.io/spawn-quest)
 
 
