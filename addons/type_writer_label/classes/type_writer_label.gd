@@ -15,6 +15,9 @@ signal new_chars_typed(chars: String)
 			_typing_time_gap = 1.0 / typing_speed
 ## Optional. Plays whenever new characters are displayed on screen.
 @export var typing_sound_player: AudioStreamPlayer
+@export var pitch_minimum := 0.9 ## Minimum pitch for the audio player.
+@export var pitch_maximum := 1.1 ## Maximum pitch for the audio player.
+
 ## Set [code]true[/code] if you want a stop after reaching a specific character.[br][br]
 ## [b]Do not mistake the stop for the pause[/b].[br][br]
 ## The [b]stop[/b] happens when reaching [member stop_characters] and has a duration defined by [member stop_duration]. After that, the typing [b]will automatically resume[/b].[br]
@@ -86,6 +89,8 @@ func _process(delta: float) -> void:
 						new_chars_typed.emit(next_chars)
 						# Play writing sound if exists and is not playing.
 						if typing_sound_player && !typing_sound_player.playing:
+							## Randomize Pitch
+							typing_sound_player.pitch_scale = randf_range(pitch_minimum, pitch_maximum)
 							typing_sound_player.play()
 						_typing_timer -= delta
 					_stop_timer -= delta
